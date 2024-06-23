@@ -1,14 +1,60 @@
 import {Router} from 'express'
-import {GetAllProducts,GetOneProduct,UpdateProduct,DeleteProduct,CreateNewProduct} from '../controllers/products.controllers.js'
+import pool from '../db.config.js';
 
 const router = Router();
 
-router.get('/products', GetAllProducts)
+router.get('/', async (req, res)=>{
+    try {
+     const result = await pool.query("SELECT * FROM products")
+     res.status(200).json(result);
+    } catch (error) {
+       res.status(500).json({success:false , message:error.message})
+    }
+ })
+.get('/products/:id', async(req, res) => {
+    try {
+        const result = await pool.query("SELECT * FROM products WHERE id = $1", [req.params.id]);
+        if (result.rows.length > 0) {
+            res.status(200).json(result.rows[0]);
+        } else {
+            res.status(404).json({ success: false, message: "Product not found" });
+        }
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
 
-router.get('/products/:id',GetOneProduct)
+})
+.patch('/products/:id', async(req, res) => {
+    try {
+        const result = await pool.query("SELECT * FROM products WHERE id = $1", [req.params.id]);
+        if (result.rows.length > 0) {
+            res.status(200).json(result.rows[0]);
+        } else {
+            res.status(404).json({ success: false, message: "Product not found" });
+        }
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
 
-router.patch('/products/:id',UpdateProduct)
+})
+.delete('/products/:id', async(req, res) => {
+    try {
+        const result = await pool.query("SELECT * FROM products WHERE id = $1", [req.params.id]);
+        if (result.rows.length > 0) {
+            res.status(200).json(result.rows[0]);
+        } else {
+            res.status(404).json({ success: false, message: "Product not found" });
+        }
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
 
-router.delete('/products/:id',DeleteProduct)
-
-router.post('/products',CreateNewProduct)
+})
+.post('/products',async (req, res)=>{
+    try {
+     const result = await pool.query("SELECT * FROM products")
+     res.status(200).json(result);
+    } catch (error) {
+       res.status(500).json({success:false , message:error.message})
+    }
+ })
